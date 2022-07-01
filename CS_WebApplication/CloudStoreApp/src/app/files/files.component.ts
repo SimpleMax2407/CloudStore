@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from './../auth/auth.service';
+import { FilesService } from './files.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-files',
@@ -7,9 +10,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FilesComponent implements OnInit {
 
-  constructor() { }
+  constructor(public auth: AuthService, private service: FilesService, private router: Router) { }
+  public files;
 
   ngOnInit(): void {
+    if (!this.auth.isAuthenticated()) {
+      this.router.navigate(["/auth/login"]);
+      return;
+    }
+    
+    this.getFiles();
+    
+  }
+
+  public getFiles() {
+    this.service.getAllFiles()
+    .subscribe((files) => {
+      return files;
+     },
+      (errorResponse) => {
+        console.error(errorResponse.status)
+        console.error(errorResponse.error['error']);
+      });
   }
 
 }
