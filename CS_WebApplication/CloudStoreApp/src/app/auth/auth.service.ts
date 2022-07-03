@@ -41,7 +41,6 @@ export class AuthService {
     this.decodedToken = jwt.decodeToken(token);
     localStorage.setItem('auth_tkn', token);
     localStorage.setItem('auth_meta', JSON.stringify(this.decodedToken));
-    console.log(this.decodedToken);
     return token;
   }
 

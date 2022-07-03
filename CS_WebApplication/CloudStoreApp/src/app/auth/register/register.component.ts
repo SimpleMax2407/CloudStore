@@ -21,13 +21,17 @@ export class RegisterComponent implements OnInit {
   register(): void {
     alert("Start");
     this.errors = [];
-    console.log(this.formData);
     this.auth.register(this.formData)
       .subscribe(() => {
         this.router.navigate(['/auth/login'], { queryParams: { registered: 'success' } });
        },
         (errorResponse) => {
+          if (errorResponse.status === 0) {
+            this.errors.push("Server is not available");
+          }
+          else {
           this.errors.push(errorResponse.error['error']);
+          }
         });
   }
 }

@@ -23,6 +23,13 @@ export class FilesService {
     return this.http.get(URI, { 'headers': headers });
   }
 
+  public download(fileName: string) : Observable<Blob> {
+    alert("Download " + fileName);
+    const URI = this.uriseg + '/download/' + fileName;
+    let headers = this.getAuthHeader();
+    return this.http.get(URI, { 'headers': headers,  responseType: 'blob' });
+  }
+
   public sizeToString(size){
     const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
      let l = 0, n = parseInt(size, 10) || 0;

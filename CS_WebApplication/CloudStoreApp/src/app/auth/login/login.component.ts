@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from './../auth.service';
 
-@Component({
+@Component({ 
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
@@ -44,13 +44,18 @@ export class LoginComponent implements OnInit {
 
   login(): void {
     this.errors = [];
-    console.log(this.loginForm.value);
+    
     this.auth.login(this.loginForm.value)
-      .subscribe((token) => {
+      .subscribe(() => {
         this.router.navigate(['/'], { queryParams: { loggedin: 'success' } });
        },
         (errorResponse) => {
-          this.errors.push(errorResponse.error['error']);
+          if (errorResponse.status === 0) {
+            this.errors.push("Server is not available");
+          }
+          else {
+            this.errors.push(errorResponse.error['error']);
+          }
         });
   }
 }
