@@ -23,11 +23,26 @@ export class FilesService {
     return this.http.get(URI, { 'headers': headers });
   }
 
+  public delete(fileName: string) : Observable<any> {
+
+    const URI = this.uriseg + '/' + fileName;
+    let headers = this.getAuthHeader();
+    return this.http.delete(URI, { 'headers': headers });
+  }
+
   public download(fileName: string) : Observable<Blob> {
-    alert("Download " + fileName);
+
     const URI = this.uriseg + '/download/' + fileName;
     let headers = this.getAuthHeader();
     return this.http.get(URI, { 'headers': headers,  responseType: 'blob' });
+  }
+
+  public upload(file: File) : Observable<any> {
+    const URI = this.uriseg;
+    let headers = this.getAuthHeader();
+    const formData = new FormData();
+    formData.append("thumbnail", file);
+    return this.http.post(URI, formData, { 'headers': headers });
   }
 
   public sizeToString(size){

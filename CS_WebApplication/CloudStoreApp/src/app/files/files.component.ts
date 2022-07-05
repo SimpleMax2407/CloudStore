@@ -1,6 +1,8 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { AuthService } from './../auth/auth.service';
 import { FilesService } from './files.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FilesFilterService } from './files-filter.service';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { saveAs } from 'file-saver';
@@ -15,7 +17,7 @@ import { saveAs } from 'file-saver';
 
 export class FilesComponent implements OnInit {
 
-  constructor(public auth: AuthService, public upload: Upload, public confirm: ConfirmationDialogService , private service: FilesService, private router: Router, private route: ActivatedRoute) { }
+  constructor(public auth: AuthService, public upload: Upload, public confirm: ConfirmationDialogService, public filter: FilesFilterService, private service: FilesService, private router: Router, private route: ActivatedRoute) { }
   public files: any = [];
   errors: any = [];
 
@@ -31,14 +33,30 @@ export class FilesComponent implements OnInit {
 
   }
 
-  public download(fileName) {
+  public async delete(fileName: string) {
+    this.confirm.openConfirmDeletionBox();
+
+    if (await this.confirm.getResult()) {
+      alert("Delete " + fileName);
+      this.service.delete(fileName)
+      .subscribe(() => {
+        this.getFiles();
+      },
+      (errorResponse) => {
+        
+        console.error(errorResponse.error['error']);
+      });
+    }
+  }
+
+  public download(fileName: string) {
 
     this.service.download(fileName)
     .subscribe(x => {
 
       let blob:any = new Blob([x], { type: "application/octet-stream" });
 			const url = window.URL.createObjectURL(blob);
-			//window.open(url);
+
 			saveAs(blob, fileName);
   })
   }
@@ -61,6 +79,17 @@ export class FilesComponent implements OnInit {
   public getFileSize(size: number) {
     return this.service.sizeToString(size);
   }
+
+  public uploadFile() {
+    
+    this.service.upload(this.upload.file).subscribe(() => {
+      this.getFiles();
+    },
+    (errorResponse) => {
+
+      console.error(errorResponse.error['error']);
+    });
+  }
 }
 
 @Injectable({
@@ -68,16 +97,15 @@ export class FilesComponent implements OnInit {
 })
 export class Upload {
 
-  file: File;
+  public form: FormGroup = new FormGroup ({
+    _file: new FormControl('', Validators.required)
+  });
 
-  public onChange(event) {
+  public file: File;
+
+  public onchange(event) {
     this.file = event.target.files[0];
   }
 
-  public upload() {
-    alert(this.file.name);
-    if(confirm("Are you sure to delete "+this.file.name)) {
-      console.log("Implement delete functionality here");
-    }
-  }
+  
 }

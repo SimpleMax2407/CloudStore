@@ -12,6 +12,21 @@ import {
   providedIn: 'root'
 })
 export class ConfirmationDialogService {
+  
+  ready = false;
+  result = false;
+
+  delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
+
+  public async getResult(): Promise<boolean> {
+    while(!this.ready) {
+      await new Promise(f => setTimeout(f, 1000));
+    }
+
+    return this.result;
+  }
 
   public openConfirmDeletionBox() {
     const newConfirmBox = new ConfirmBoxInitializer();
@@ -28,13 +43,12 @@ export class ConfirmationDialogService {
     });
 
     newConfirmBox.setButtonLabels('Delete', 'Cancel');
-
-    // Simply open the popup and observe button click
+    
+    this.ready = false;
     newConfirmBox.openConfirmBox$().subscribe(resp => {
-      if(resp.clickedButtonID){
-        console.log('Button clicked: ', resp.clickedButtonID);
-      }
+      this.ready = true;
+      this.result = resp.clickedButtonID == 'delete';
     });
-}
+``}
 
 }

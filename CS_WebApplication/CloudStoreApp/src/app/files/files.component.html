@@ -1,73 +1,111 @@
-<div class="d-flex justify-content-center">
-  <div class="col-md-6 row">
-    <label class="form-label text-center" for="file">Upload file</label>
-    <input type="file" class="form-control" (change)="upload.onChange($event)" />
+<div class="container" style="margin-top: 50px;">
+  <div class="d-flex justify-content-center">
+    <div class="col-md-6 row">
+      <form [formGroup]="upload.form" (submit)="uploadFile()">
+      <label class="form-label text-center" for="uploadFile">Upload file</label>
+      <input formControlName="_file" type="file" class="form-control" (change)="upload.onchange($event)"/>
+      <div *ngIf="upload.form.controls['_file'].errors" class="alert alert-danger">
+        File is required.
+      </div>
+      <div class="mb-5" style="display: flex; justify-content: center; align-items: center;">
+        <button
+        type="submit"
+        class="btn btn-primary btn-lg btn-block mt-2"
+        [disabled]="!upload.form.valid">Add file</button>
+      </div>
+    </form>
+    </div>
   </div>
-</div>
-<div *ngIf="errors.length > 0" class="alert alert-danger">
-  <ul *ngFor = "let error of errors">
-    <li>{{ error }}</li>
-  </ul>
-</div>
-<div class="mb-5" style="display: flex; justify-content: center; align-items: center;">
-  <button
-  (click)="upload.upload()"
-  class="btn btn-primary btn-lg btn-block mt-2">Add file</button>
-</div>
-<div class="mt-6 col-md-11">
-  <ng-container *ngIf="files && files.length > 0">
-    <table class="table align-middle mb-0 bg-white">
-        <thead class="bg-light">
-          <tr>
-            <th>Name</th>
-            <th>Owner</th>
-            <th>Size</th>
-            <th>Created</th>
-            <th style="table-layout:fixed; width: 40px;">Edited</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          
-          <tr *ngFor="let file of files">
-            <td style="text-overflow: ellipsis;">
-              {{file['fileName']}}
-            </td>
-            <td>
-              {{file['userName']}}
-            </td>
-            <td>
-              {{getFileSize(file['size'])}}
-            </td>
-            <td>
-              {{file['creationDate'] | date:'yyyy-MM-dd hh:mm'}}
-            </td>
-            <td>{{file['editDate'] | date:'yyyy-MM-dd hh:mm'}}</td>
-            <td class="column" style=" padding-left: 10px">
-              <button  type="button" class="btn btn-link btn-sm btn-rounded">
-                Deep
-              </button>
-              <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item>
-                  <mat-icon>create</mat-icon>
-                  <span>Rename</span>
+ 
+
+  <div class="row" style="justify-content: center;">
+    <ng-container *ngIf="files && files.length > 0">
+      <div class="row">
+        <mat-form-field class="example-form-field col-md-3" appearance="fill" >
+          <mat-label>Creation date</mat-label>
+          <mat-date-range-input
+            [formGroup]="filter.campaignOne"
+            [rangePicker]="campaignOnePicker"
+            [comparisonStart]="filter.campaignTwo.value.start"
+            [comparisonEnd]="filter.campaignTwo.value.end">
+            <input matStartDate placeholder="Start date" formControlName="start">
+            <input matEndDate placeholder="End date" formControlName="end">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+        </mat-form-field>
+        <mat-form-field class="example-form-field col-md-3" appearance="fill">
+          <mat-label>Edit date</mat-label>
+          <mat-date-range-input
+            [formGroup]="filter.campaignTwo"
+            [rangePicker]="campaignTwoPicker"
+            [comparisonStart]="filter.campaignOne.value.start"
+            [comparisonEnd]="filter.campaignOne.value.end">
+            <input matStartDate placeholder="Start date" formControlName="start">
+            <input matEndDate placeholder="End date" formControlName="end">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="campaignTwoPicker"></mat-datepicker-toggle>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-date-range-picker #campaignTwoPicker></mat-date-range-picker>
+        </mat-form-field>
+        <button class="btn btn-primary btn-lg btn-block col-md-2" type="submit" [style.height.px]="52">
+          <span>Apply filter</span>
+        </button>
+      </div>
+      <table class="table align-middle mb-0 bg-white mt-2" style="overflow: hidden;">
+          <thead class="bg-light">
+            <tr>
+              <th >Name</th>
+              <th>Owner</th>
+              <th style="width: 64px;">Size</th>
+              <th style="max-width: 130px;">Created</th>
+              <th style="max-width: 130px;">Edited</th>
+              <th [style.max-width.px]="40"></th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr *ngFor="let file of files">
+              <td style="text-overflow: ellipsis;">
+                {{file['fileName']}}
+              </td>
+              <td>
+                {{file['userName']}}
+              </td>
+              <td>
+                {{getFileSize(file['size'])}}
+              </td>
+              <td>
+                {{file['creationDate'] | date:'yyyy-MM-dd hh:mm'}}
+              </td>
+              <td>{{file['editDate'] | date:'yyyy-MM-dd hh:mm'}}</td>
+              <td class="column" style=" padding-left: 10px">
+
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <span class="material-symbols-outlined">
+                    more_vert
+                  </span>
                 </button>
-                <button (click)="download(file['fileName'])" mat-menu-item>
-                  <mat-icon>get_app</mat-icon>
-                  <span>Download</span>
-                </button>
-                <button mat-menu-item (click)="confirm.openConfirmDeletionBox()">
-                  <mat-icon>delete</mat-icon>
-                  <span>Delete</span>
-                </button>
-              </mat-menu>
-            </td>
-          </tr>
-        </tbody>
-    </table>
-  </ng-container>
-  <ng-template #elseBlock><p class="text-center">Files wasn't found</p></ng-template>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item>
+                    <mat-icon>create</mat-icon>
+                    <span>Rename</span>
+                  </button>
+                  <button (click)="download(file['fileName'])" mat-menu-item>
+                    <mat-icon>get_app</mat-icon>
+                    <span>Download</span>
+                  </button>
+                  <button mat-menu-item (click)="delete(file['fileName'])">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                </mat-menu>
+              </td>
+            </tr>
+          </tbody>
+      </table>
+    </ng-container>
+    <ng-template #elseBlock><p class="text-center">Files wasn't found</p></ng-template>
+  </div>
 </div>

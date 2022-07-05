@@ -5,6 +5,8 @@ import { MatCommonModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker'  
+import { MatNativeDateModule } from '@angular/material/core'  
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -42,9 +44,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ReactiveFormsModule,
 
     MatCommonModule,
+    MatDatepickerModule,
     MatFormFieldModule,
     MatIconModule,
     MatMenuModule,
+    MatNativeDateModule,
 
     NgxAwesomePopupModule.forRoot({
       colorList: {
