@@ -1,17 +1,24 @@
 <div class="container" style="margin-top: 50px;">
   <div class="d-flex justify-content-center">
     <div class="col-md-6 row">
-      <form [formGroup]="upload.form" (submit)="uploadFile()">
+      <form [formGroup]="upload.form" (ngSubmit)="uploadFile($event.submitter.name)">
       <label class="form-label text-center" for="uploadFile">Upload file</label>
       <input formControlName="_file" type="file" class="form-control" (change)="upload.onchange($event)"/>
       <div *ngIf="upload.form.controls['_file'].errors" class="alert alert-danger">
         File is required.
       </div>
-      <div class="mb-5" style="display: flex; justify-content: center; align-items: center;">
+      <div class="mt-2 mb-5 column" style="display: flex; justify-content: center; align-items: center;">
         <button
         type="submit"
-        class="btn btn-primary btn-lg btn-block mt-2"
+        name="add"
+        class="btn btn-primary btn-lg btn-block "
         [disabled]="!upload.form.valid">Add file</button>
+        <div class="col-md-1"></div>
+        <button
+        type="submit"
+        name="edit"
+        class="ml-2 btn btn-primary btn-lg btn-block"
+        [disabled]="!upload.form.valid">Edit file</button>
       </div>
     </form>
     </div>
@@ -88,11 +95,11 @@
                   </span>
                 </button>
                 <mat-menu #menu="matMenu">
-                  <button mat-menu-item>
+                  <button mat-menu-item (click)="rename(file['fileName'])">
                     <mat-icon>create</mat-icon>
                     <span>Rename</span>
                   </button>
-                  <button (click)="download(file['fileName'])" mat-menu-item>
+                  <button mat-menu-item (click)="download(file['fileName'])">
                     <mat-icon>get_app</mat-icon>
                     <span>Download</span>
                   </button>

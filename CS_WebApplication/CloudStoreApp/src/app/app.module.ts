@@ -7,6 +7,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker'  
 import { MatNativeDateModule } from '@angular/material/core'  
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,7 +19,8 @@ import { AuthComponent } from './auth/auth.component';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 
 import { AuthModule } from './auth/auth.module';
-import { FilesComponent } from './files/files.component';
+import { FilesComponent, RenameDialog } from './files/files.component';
+import { RenameDialogComponent } from './rename-dialog/rename-dialog.component'
 
 import {
   ConfirmBoxConfigModule,
@@ -34,7 +37,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HomeComponent,
     ProfileComponent,
     AuthComponent,
-    FilesComponent
+    FilesComponent,
+    RenameDialog,
+    RenameDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -45,10 +50,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
     MatCommonModule,
     MatDatepickerModule,
+    MatDialogModule, 
     MatFormFieldModule,
     MatIconModule,
     MatMenuModule,
     MatNativeDateModule,
+    MatTableModule,
 
     NgxAwesomePopupModule.forRoot({
       colorList: {
@@ -66,6 +73,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ToastNotificationConfigModule.forRoot(), BrowserAnimationsModule, // optional
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ FilesComponent, RenameDialogComponent ]
 })
 export class AppModule { }

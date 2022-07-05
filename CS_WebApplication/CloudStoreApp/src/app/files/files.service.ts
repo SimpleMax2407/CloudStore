@@ -23,6 +23,14 @@ export class FilesService {
     return this.http.get(URI, { 'headers': headers });
   }
 
+  public edit(file: File) : Observable<any> {
+    const URI = this.uriseg;
+    let headers = this.getAuthHeader();
+    const formData = new FormData();
+    formData.append('', file);
+    return this.http.put(URI, formData, { 'headers': headers });
+  }
+
   public delete(fileName: string) : Observable<any> {
 
     const URI = this.uriseg + '/' + fileName;
@@ -41,7 +49,7 @@ export class FilesService {
     const URI = this.uriseg;
     let headers = this.getAuthHeader();
     const formData = new FormData();
-    formData.append("thumbnail", file);
+    formData.append('', file);
     return this.http.post(URI, formData, { 'headers': headers });
   }
 
